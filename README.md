@@ -14,4 +14,4 @@ For anything else LCE related, join the [Minecraft LCE Research Discord Server](
 |--|--|
 | [Yunivers](https://github.com/AITYunivers)| Creator |
 | [Team LodeStone](https://team-lodestone.github.io/)| Documentation of file formats used by LCE |
-| [PhoenixARC](https://github.com/PhoenixARC) | OMI and it's "documentation" of file formats used by LCE |
+| [PhoenixARC](https://github.com/PhoenixARC)<br/>[NessiHacks](https://github.com/NessieHax)<br/>[MattNL](https://github.com/MattN-L) | OMI and it's implementation of file formats used by LCE that I referenced when wriitng my own |
