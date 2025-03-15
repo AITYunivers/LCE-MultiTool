@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:local="using:LCE_MultiTool.GUI"
+             mc:Ignorable="d"
+			 d:DesignWidth="914"
+			 d:DesignHeight="684"
+			 x:CompileBindings="False"
+             x:Class="LCE_MultiTool.GUI.LocalizationBrowser">
+	<Grid RowDefinitions="48,*">
+		<Grid ColumnDefinitions="140,*">
+			<ComboBox x:Name="Languages" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="8" SelectionChanged="ComboBox_SelectionChanged"/>
+			<TextBox x:Name="Search" Grid.Column="1" Margin="0,8,8,8" TextChanged="TextBox_TextChanged"/>
+		</Grid>
+		<DataGrid Grid.Row="1" ItemsSource="{Binding Entries}" x:Name="extGrid" IsReadOnly="True" CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True" GridLinesVisibility="All" BorderBrush="{DynamicResource SemiColorBackground1}" BorderThickness="1" Margin="8,0,8,8">
+			<DataGrid.Styles>
+				<Style Selector="DataGridColumnHeader">
+					<Setter Property="Padding" Value="8,0" />
+				</Style>
+				<Style Selector="Label.wrap > TextBlock">
+					<Setter Property="TextWrapping" Value="Wrap" />
+				</Style>
+			</DataGrid.Styles>
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
+				<DataGridTextColumn Header="Text" Width="*" Binding="{Binding Text}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

@@ -1,0 +1,36 @@
+<!--
+ATTENTION EVERYONE READING THIS
+
+This is called "InvertedSelectBox" and has a lot of unused shit in it
+bc I ripped it out of another project of mine and just edited it
+and I'm too lazy to rename it and remove all the random shit
+
+If you wanna make a PR specifically to clean this code up
+please go right ahead lol
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:common="using:LCE_MultiTool.GUI">
+	<Styles.Resources>
+		<ResourceDictionary>
+
+			<ControlTheme x:Key="{x:Type common:InvertedSelectBox}" TargetType="common:InvertedSelectBox">
+				<Setter Property="Template">
+					<ControlTemplate>
+						<ContentPresenter Name="PART_ContentPresenter"
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}"
+                                          CornerRadius="{TemplateBinding CornerRadius}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          Padding="{TemplateBinding Padding}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+					</ControlTemplate>
+				</Setter>
+			</ControlTheme>
+		</ResourceDictionary>
+	</Styles.Resources>
+</Styles>
