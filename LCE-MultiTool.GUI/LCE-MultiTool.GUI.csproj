@@ -12,6 +12,7 @@
 	  <!-- Recommended Avalonia trimming settings for Native AOT -->
 	  <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
 	  <TrimMode>link</TrimMode>
+	  <PublishSingleFile>True</PublishSingleFile>
   </PropertyGroup>
 
   <ItemGroup>

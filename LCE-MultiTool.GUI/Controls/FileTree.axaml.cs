@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using LCE_MultiTool.Data;
 using LCE_MultiTool.Data.Archive;
 using LCE_MultiTool.Data.FourJUserInterface;
@@ -211,8 +212,48 @@ public partial class FileTree : UserControl
                     }
                 }
                 break;
+            case EFileType.Audio:
+                ContextMenu menu = new ContextMenu();
+                MenuItem extractAsWav = new MenuItem();
+                extractAsWav.Header = "Extract as .wav";
+                extractAsWav.Tag = fileData;
+                extractAsWav.Click += ExtractAudio;
+                MenuItem extractAsBinka = new MenuItem();
+                extractAsBinka.Header = "Extract as .binka";
+                extractAsBinka.Tag = fileData;
+                extractAsBinka.Click += ExtractAudio;
+                menu.Items.Add(extractAsWav);
+                menu.Items.Add(extractAsBinka);
+                fileItem.ContextMenu = menu;
+                break;
         }
         return fileItem;
+    }
+
+    private async void ExtractAudio(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (sender is not MenuItem menuItem)
+            return;
+
+        bool wav = ((string)menuItem.Header!).Contains(".wav");
+        FileData fileData = ((FileData)menuItem.Tag!);
+
+        // Get top level from the current control. Alternatively, you can use Window reference instead.
+        var topLevel = TopLevel.GetTopLevel(this);
+
+        // Start async operation to open the dialog.
+        IStorageFile? file = await topLevel?.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Audio",
+            DefaultExtension = wav ? ".wav" : ".binka",
+            SuggestedFileName = wav ? fileData.Name.Replace(".binka", ".wav") : fileData.Name,
+            FileTypeChoices = [wav ? WAVFilePicker : BINKAFilePicker]
+        })!;
+
+        if (file is not null)
+        {
+            await fileData.ExtractAudioAsync(file.Path.LocalPath, wav);
+        }
     }
 
     public void SortTreeViewItems(ItemCollection items)
@@ -230,4 +271,14 @@ public partial class FileTree : UserControl
             items.Add(item);
         }
     }
+
+    public static FilePickerFileType WAVFilePicker { get; } = new("Waveform Audio File Format")
+    {
+        Patterns = ["*.wav"]
+    };
+
+    public static FilePickerFileType BINKAFilePicker { get; } = new("Bink Audio")
+    {
+        Patterns = ["*.binka"]
+    };
 }

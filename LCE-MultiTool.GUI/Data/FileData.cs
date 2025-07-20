@@ -2,9 +2,11 @@
 using LCE_MultiTool.Data.FourJUserInterface;
 using LCE_MultiTool.Data.Package;
 using LCE_MultiTool.Data.SoundBank;
+using LCE_MultiTool.GUI.Memory;
 using System;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace LCE_MultiTool.Data
 {
@@ -159,6 +161,57 @@ namespace LCE_MultiTool.Data
             if (Data is not null)
                 Data.Position = 0;
             return Data;
+        }
+
+        public async Task ExtractAudioAsync(string path, bool wav)
+        {
+            if (Type != EFileType.Audio)
+                return;
+
+            if (wav)
+            {
+                ByteReader reader = new ByteReader(GetData()!, true);
+                reader.Skip(5); // Header
+                int channels = reader.ReadByte();
+                int sampleRate = reader.ReadUShort();
+                reader.Dispose();
+
+                using (var ffmpegProcess = new Process())
+                {
+                    ffmpegProcess.StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "ffmpeg",
+                        Arguments = $"-nostdin -f binka -i pipe:0 -ac {channels} -ar {sampleRate} -f wav pipe:1",
+                        RedirectStandardInput = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    ffmpegProcess.Start();
+
+                    // Write MemoryStream data to FFmpeg's standard input asynchronously
+                    var writeTask = Task.Run(async () =>
+                    {
+                        await GetData()!.CopyToAsync(ffmpegProcess.StandardInput.BaseStream);
+                        ffmpegProcess.StandardInput.Close(); // Signal FFmpeg that the stream is done
+                    });
+
+                    // Read PCM data into file
+                    FileStream stream = File.Create(path);
+                    await ffmpegProcess.StandardOutput.BaseStream.CopyToAsync(stream);
+                    await ffmpegProcess.WaitForExitAsync();
+                    stream.Close();
+                }
+            }
+            else
+            {
+                // Read BINKA data into file
+                FileStream stream = File.Create(path);
+                await GetData()!.CopyToAsync(stream);
+                stream.Close();
+            }
         }
     }
 }
